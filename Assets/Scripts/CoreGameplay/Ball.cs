@@ -35,7 +35,7 @@ public class Ball : MonoBehaviour
     {
         if(GameController.instance.isGamePaused) return;
         
-        if(transform.position.y < bottomPlane.position.y) GameController.instance.gameOver(true);
+        if(transform.position.y < bottomPlane.position.y) Messenger.instance.ballFell();
             
         if (Input.touchCount > 0)
         {

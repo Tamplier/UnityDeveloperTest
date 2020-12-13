@@ -18,7 +18,7 @@ public class MainMenu : MonoBehaviour
     {
         if(startLoadingMainScene) return;
 
-        if (Input.touchCount > 0 || Input.GetMouseButtonDown(0))
+        if ((Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Ended) || Input.GetMouseButtonUp(0))
         {
             startLoadingMainScene = true;
             SceneManager.LoadScene("MainScene");

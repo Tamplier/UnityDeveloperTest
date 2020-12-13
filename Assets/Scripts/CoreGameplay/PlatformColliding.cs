@@ -80,7 +80,7 @@ public class PlatformColliding : MonoBehaviour
         {
             ball.rigidbody.velocity = vel;
             reflected = true;
-            if(speedZ > 0) GameController.instance.gameOver(false);
+            if(speedZ > 0) Messenger.instance.lastPlatformReflected();
         }
     }
 

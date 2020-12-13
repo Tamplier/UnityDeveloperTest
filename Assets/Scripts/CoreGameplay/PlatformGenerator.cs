@@ -16,7 +16,6 @@ public class PlatformGenerator : MonoBehaviour
     public float platformSpeed = 8;
     public float platformFastSpeed = 50f;
     [HideInInspector] public int levelLength;
-    [HideInInspector] public Gradient platformColors;
 
     private ObjectPool pool;
     private Vector3 platformsVelocity;
@@ -74,7 +73,7 @@ public class PlatformGenerator : MonoBehaviour
             pool,
             disableScore,
             progressNotification);
-        platform.setColor(platformColors.Evaluate(progress));
+        Messenger.instance.newPlatformCreated(platform, progress);
         if(prevPlatform != null) prevPlatform.setNextPlatform(platform.transform);
         prevPlatform = platform;
         return platform;
