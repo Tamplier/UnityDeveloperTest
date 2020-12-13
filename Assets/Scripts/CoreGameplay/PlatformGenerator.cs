@@ -1,12 +1,9 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using UnityEngine;
 
 public class PlatformGenerator : MonoBehaviour
 {
     public GameObject platformPrefab;
-    public GameObject ballPrefab;
     public GameObject platformStartPosition;
     public GameObject platformEndPosition;
     public GameObject platformFirstPosition;
@@ -33,6 +30,7 @@ public class PlatformGenerator : MonoBehaviour
         platformsVelocity = new Vector3(0, 0, -platformSpeed);
         platformsFastVelocity = new Vector3(0, 0, -platformFastSpeed);
         init();
+        Messenger.instance.requestReturnBall();
     }
     
 
@@ -79,12 +77,6 @@ public class PlatformGenerator : MonoBehaviour
         return platform;
     }
 
-    private void spawnBall(Vector3 position)
-    {
-        GameObject ball = Instantiate(ballPrefab, transform.parent.parent);
-        ball.transform.position = position;
-    }
-
     private float getNextGenerationTime()
     {
         return generationDelayMean + Random.Range(-generationDelayDeviation, generationDelayDeviation);
@@ -95,10 +87,7 @@ public class PlatformGenerator : MonoBehaviour
         float currentZ = platformFirstPosition.transform.position.z;
         float time = getNextGenerationTime();
         prevPlatform = createPlatform(0, currentZ,false, true);
-        Vector3 firstPlatformPos = prevPlatform.transform.position;
-        firstPlatformPos.y += 1;
-        spawnBall(firstPlatformPos);
-        
+
         float lastDistance = getNextGenerationTime() * platformSpeed;
         float minDistance = (generationDelayMean - generationDelayDeviation) * platformSpeed;
         platformCounter = 0;

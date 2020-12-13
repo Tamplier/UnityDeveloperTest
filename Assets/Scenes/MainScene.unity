@@ -541,6 +541,7 @@ GameObject:
   - component: {fileID: 601967229}
   - component: {fileID: 601967230}
   - component: {fileID: 601967231}
+  - component: {fileID: 601967232}
   m_Layer: 0
   m_Name: GameArea
   m_TagString: Untagged
@@ -692,6 +693,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 41572fd9069bb664fa1c5cba342be248, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &601967232
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 601967227}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d9cb3613c14073944b2187444839bf8a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ballPrefab: {fileID: 7054939661382218628, guid: 1cb9192c0fc44c9419b3af1df8db3602, type: 3}
+  ballParent: {fileID: 601967228}
 --- !u!1 &958260354
 GameObject:
   m_ObjectHideFlags: 0
@@ -815,7 +830,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   platformPrefab: {fileID: 6337075965930947592, guid: 2ac173bbc9bf1634f96db016aa25635b, type: 3}
-  ballPrefab: {fileID: 7054939661382218628, guid: 1cb9192c0fc44c9419b3af1df8db3602, type: 3}
   platformStartPosition: {fileID: 1378455802}
   platformEndPosition: {fileID: 1475896720}
   platformFirstPosition: {fileID: 1200544613}

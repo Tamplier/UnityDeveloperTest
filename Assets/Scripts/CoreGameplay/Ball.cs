@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class Ball : MonoBehaviour
 {
@@ -40,12 +37,7 @@ public class Ball : MonoBehaviour
         if (Input.touchCount > 0)
         {
             Touch touch = Input.GetTouch(0);
-            switch (touch.phase)
-            {
-                case TouchPhase.Moved:
-                    continueDragging(touch.position);
-                    break;
-            }
+            if(touch.phase == TouchPhase.Moved) continueDragging(touch.position);
         }
         else
         {
@@ -58,9 +50,7 @@ public class Ball : MonoBehaviour
     {
         float newX = 0;
         float screenBorder = Screen.width * 0.1f;
-        if (pos.x > Screen.width - screenBorder) pos.x = Screen.width - screenBorder;
-        pos.x -= screenBorder;
-        if (pos.x < 0) pos.x = 0;
+        pos.x = Mathf.Clamp(pos.x, screenBorder, Screen.width - screenBorder) - screenBorder;
         float relativePosX = pos.x / (Screen.width - 2 * screenBorder);
         newX = -planeWidth / 2f + relativePosX * planeWidth;
         

@@ -8,7 +8,8 @@ public class Messenger : MonoBehaviour
     public static Messenger instance;
     public event Action onBallFell;
     public event Action onLastPlatformReflected;
-    public event Action<Platform, float> onNewPlatformCreated; 
+    public event Action<Platform, float> onNewPlatformCreated;
+    public event Action onReturnBallRequested; 
 
     private void Awake()
     {
@@ -29,5 +30,10 @@ public class Messenger : MonoBehaviour
     public void newPlatformCreated(Platform platform, float progress)
     {
         onNewPlatformCreated?.Invoke(platform, progress);
+    }
+
+    public void requestReturnBall()
+    {
+        onReturnBallRequested?.Invoke();
     }
 }
