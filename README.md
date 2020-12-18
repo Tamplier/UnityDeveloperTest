@@ -11,3 +11,5 @@ The main refference is [Tile Hop](https://play.google.com/store/apps/details?id=
 Time spent on the task: 15 hours.
 
 My real project: [Cats Hotel](https://play.google.com/store/apps/details?id=com.ohayoo.meowtel.cats.home&hl=ru&gl=US "Cats Hotel").
+
+Also you can find something more than just random platform generation in [music-related-generator](https://github.com/Tamplier/UnityDeveloperTest/tree/music-related-generator "music-related-generator") branch.
