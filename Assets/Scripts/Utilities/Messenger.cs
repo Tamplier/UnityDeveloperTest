@@ -9,7 +9,9 @@ public class Messenger : MonoBehaviour
     public event Action onBallFell;
     public event Action onLastPlatformReflected;
     public event Action<Platform, float> onNewPlatformCreated;
-    public event Action onReturnBallRequested; 
+    public event Action onReturnBallRequested;
+    public event Action onAudioAnalysisFinished;
+    public event Action<float> onReturnBackInTime;
 
     private void Awake()
     {
@@ -35,5 +37,15 @@ public class Messenger : MonoBehaviour
     public void requestReturnBall()
     {
         onReturnBallRequested?.Invoke();
+    }
+
+    public void audioAnalysisFinished()
+    {
+        onAudioAnalysisFinished?.Invoke();
+    }
+
+    public void returnBackInTime(float time)
+    {
+        onReturnBackInTime?.Invoke(time);
     }
 }

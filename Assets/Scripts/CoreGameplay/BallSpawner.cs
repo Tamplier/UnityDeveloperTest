@@ -39,6 +39,7 @@ public class BallSpawner : MonoBehaviour
         firstPlatformPos.y += 1;
         firstPlatformPos.z = fpPos.transform.position.z;
         foreach (PlatformMoving platform in platforms) platform.returnBackInTime(rollBackTime);
+        Messenger.instance.returnBackInTime(rollBackTime);
         return firstPlatformPos;
     }
 

@@ -9,10 +9,7 @@ using DSPLib;
 
 
 public class SongController : MonoBehaviour {
-
-	float[] realTimeSpectrum;
 	SpectralFluxAnalyzer realTimeSpectralFluxAnalyzer;
-	PlotController realTimePlotController;
 
 	int numChannels;
 	int numTotalSamples;
@@ -20,69 +17,44 @@ public class SongController : MonoBehaviour {
 	float clipLength;
 	float[] multiChannelSamples;
 	SpectralFluxAnalyzer preProcessedSpectralFluxAnalyzer;
-	PlotController preProcessedPlotController;
 
-	AudioSource audioSource;
-
-	public bool realTimeSamples = true;
-	public bool preProcessSamples = false;
+	private AudioSource audioSource;
+	private bool analyzeFinished;
+	public PlatformGenerator platformGenerator;
 
 	void Start() {
 		audioSource = GetComponent<AudioSource> ();
 
-		// Process audio as it plays
-		if (realTimeSamples) {
-			realTimeSpectrum = new float[1024];
-			realTimeSpectralFluxAnalyzer = new SpectralFluxAnalyzer ();
-			realTimePlotController = GameObject.Find ("RealtimePlot").GetComponent<PlotController> ();
-
-			this.sampleRate = AudioSettings.outputSampleRate;
-		}
-
 		// Preprocess entire audio file upfront
-		if (preProcessSamples) {
-			preProcessedSpectralFluxAnalyzer = new SpectralFluxAnalyzer ();
-			preProcessedPlotController = GameObject.Find ("PreprocessedPlot").GetComponent<PlotController> ();
+		
+		preProcessedSpectralFluxAnalyzer = new SpectralFluxAnalyzer ();
 
-			// Need all audio samples.  If in stereo, samples will return with left and right channels interweaved
-			// [L,R,L,R,L,R]
-			multiChannelSamples = new float[audioSource.clip.samples * audioSource.clip.channels];
-			numChannels = audioSource.clip.channels;
-			numTotalSamples = audioSource.clip.samples;
-			clipLength = audioSource.clip.length;
+		// Need all audio samples.  If in stereo, samples will return with left and right channels interweaved
+		// [L,R,L,R,L,R]
+		multiChannelSamples = new float[audioSource.clip.samples * audioSource.clip.channels];
+		numChannels = audioSource.clip.channels;
+		numTotalSamples = audioSource.clip.samples;
+		clipLength = audioSource.clip.length;
 
-			// We are not evaluating the audio as it is being played by Unity, so we need the clip's sampling rate
-			this.sampleRate = audioSource.clip.frequency;
+		// We are not evaluating the audio as it is being played by Unity, so we need the clip's sampling rate
+		this.sampleRate = audioSource.clip.frequency;
 
-			audioSource.clip.GetData(multiChannelSamples, 0);
-			Debug.Log ("GetData done");
+		audioSource.clip.GetData(multiChannelSamples, 0);
+		Debug.Log ("GetData done");
 
-			Thread bgThread = new Thread (this.getFullSpectrumThreaded);
+		Thread bgThread = new Thread (this.getFullSpectrumThreaded);
 
-			Debug.Log ("Starting Background Thread");
-			bgThread.Start ();
-		}
+		Debug.Log ("Starting Background Thread");
+		bgThread.Start ();
 	}
 
 	void Update() {
-		// Real-time
-		if (realTimeSamples) {
-			audioSource.GetSpectrumData (realTimeSpectrum, 0, FFTWindow.BlackmanHarris);
-			realTimeSpectralFluxAnalyzer.analyzeSpectrum (realTimeSpectrum, audioSource.time);
-			realTimePlotController.updatePlot (realTimeSpectralFluxAnalyzer.spectralFluxSamples);
-		}
-
 		// Preprocessed
-		if (preProcessSamples) {
-			int indexToPlot = getIndexFromTime (audioSource.time) / 1024;
-			preProcessedPlotController.updatePlot (preProcessedSpectralFluxAnalyzer.spectralFluxSamples, indexToPlot);
+		if (analyzeFinished)
+		{
+			analyzeFinished = false;
+			platformGenerator.setSpectralData(preProcessedSpectralFluxAnalyzer.spectralFluxSamples, audioSource.clip.length);
 		}
-	}
-
-	public int getIndexFromTime(float curTime) {
-		float lengthPerSample = this.clipLength / (float)this.numTotalSamples;
-
-		return Mathf.FloorToInt (curTime / lengthPerSample);
 	}
 
 	public float getTimeFromIndex(int index) {
@@ -135,14 +107,15 @@ public class SongController : MonoBehaviour {
 
 				// These 1024 magnitude values correspond (roughly) to a single point in the audio timeline
 				float curSongTime = getTimeFromIndex(i) * spectrumSampleSize;
-
+				
 				// Send our magnitude data off to our Spectral Flux Analyzer to be analyzed for peaks
 				preProcessedSpectralFluxAnalyzer.analyzeSpectrum (Array.ConvertAll (scaledFFTSpectrum, x => (float)x), curSongTime);
 			}
 
 			Debug.Log ("Spectrum Analysis done");
 			Debug.Log ("Background Thread Completed");
-				
+			analyzeFinished = true;
+
 		} catch (Exception e) {
 			// Catch exceptions here since the background thread won't always surface the exception to the main thread
 			Debug.Log (e.ToString ());

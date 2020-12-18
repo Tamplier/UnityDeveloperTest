@@ -17,6 +17,7 @@ public class PlatformColliding : MonoBehaviour
     private float shakeSpeed;
     private Vector3 shakeDirection;
     private float startPosition;
+    private float slowTraverTime;
 
     private void Awake()
     {
@@ -24,10 +25,11 @@ public class PlatformColliding : MonoBehaviour
         startPosition = transform.position.y;
     }
 
-    public void init(Vector3 velocity, bool disableScore)
+    public void init(Vector3 velocity, bool disableScore, float slowTravelTime)
     {
         this.velocity = velocity;
         this.disableScore = disableScore;
+        this.slowTraverTime = slowTravelTime;
         reflected = false;
         nextPlatform = null;
         shaked = false;
@@ -69,7 +71,12 @@ public class PlatformColliding : MonoBehaviour
         float speedZ = 50;
         if (nextPlatform != null)
         {
-            float nextPlatformTime = Mathf.Abs(other.transform.position.z - nextPlatform.position.z) / -velocity.z;
+            float timeTillFTTarget = nextPlatform.GetComponent<PlatformMoving>().getTimeTillFastTravelTarget();
+            float nextPlatformTime = 0;
+            if (timeTillFTTarget == 0)
+                nextPlatformTime = Mathf.Abs(other.transform.position.z - nextPlatform.position.z) / -velocity.z;
+            else nextPlatformTime = timeTillFTTarget + slowTraverTime; 
+
             speedY = -Physics.gravity.y * nextPlatformTime / 2f;
             speedZ = 0;
         }

@@ -52,4 +52,10 @@ public class PlatformMoving : MonoBehaviour
         transform.Translate((fastTravelTargetReached ? -velocity : -fastVelocity) * seconds);
         fTravelDistance = getDistanceToFTPoint();
     }
+
+    public float getTimeTillFastTravelTarget()
+    {
+        if (fastTravelTargetReached) return 0;
+        return Mathf.Abs(transform.position.z - fastTravelTarget.z) / -fastVelocity.z;
+    }
 }

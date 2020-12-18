@@ -12,11 +12,12 @@ public class Platform : MonoBehaviour
         Vector3 posForFastTravel,
         bool fastSpeed,
         ObjectPool pool,
+        float slowTravelTime,
         bool disableScore = false,
         float progress = 0) 
     {
         movingScript.init(velocity, fastVelocity, posForFastTravel, fastSpeed, pool);
-        collidingScript.init(velocity, disableScore);
+        collidingScript.init(velocity, disableScore, slowTravelTime);
         if(progress == 0) progressText.gameObject.SetActive(false);
         else
         {
